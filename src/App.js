@@ -4,13 +4,13 @@ import Toggle from './toggle';
 import AppDate from './appDate';
 import Favorite from './Favorite'
 import AppTv from './apicomps/AppTv';
-import App2 from './hw1/App2'
+import AppCoins from './hw2/AppCoins'
 function App() {
   return (
     <div className="App">
 {/* <AppTv/>
     <Favorite/> */}
-    <App2/>
+    <AppCoins/>
     </div>
   );
 }
