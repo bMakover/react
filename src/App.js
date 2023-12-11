@@ -5,12 +5,15 @@ import AppDate from './appDate';
 import Favorite from './Favorite'
 import AppTv from './apicomps/AppTv';
 import AppCoins from './hw2/AppCoins'
+import AppRoutes from './compsRoutes/appRoutes.js'
+
 function App() {
   return (
     <div className="App">
 {/* <AppTv/>
     <Favorite/> */}
-    <AppCoins/>
+    {/* <AppCoins/> */}
+    <AppRoutes/>
     </div>
   );
 }

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import CoinItem from './CoinItem';
 import axios from 'axios';
-import TvItem from './TvItem';
-
-export default function AppTv() {
+export default function AppCoins() {
   const [ar,setAr] = useState([]);
 
   useEffect(() => {
     doApi();
   },[])
 
-  const doApi = async() => {
-    let url = "http://fs1.co.il/bus/tv.php";
+  const doApiCountryCode = async(_countryCode) => {
+    let url = "https://restcountries.com/v3.1/alpha/"+_countryCode;
     try{
       let resp = await axios.get(url);
+  
       console.log(resp.data);
       setAr(resp.data);
     }
@@ -24,11 +24,11 @@ export default function AppTv() {
 
   return (
     <div className='container'>
-      <h1>List of VOD:</h1>
+      <h1>List of coins:</h1>
       <div className="row g-3">
         {ar.map(item => {
           return(
-            <TvItem key={item.descrption} item={item} />
+            <CoinItem key={item.id} item={item} />
           )
         })}
       </div>
