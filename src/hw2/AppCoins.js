@@ -11,10 +11,7 @@ export default function AppCoins() {
   const doApi = async() => {
     
     try{
-      let resp = await axios.get('https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
-        headers: {
-          'X-CMC_PRO_API_KEY': 'afaaee11-5e9d-442e-85c3-1f5741d59baa',
-        },
+      let resp = await axios.get('http://fs1.co.il/bus/bitcoin.php', {
       });
       console.log(resp.data);
       setAr(resp.data);
