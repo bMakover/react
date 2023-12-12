@@ -3,7 +3,7 @@ import Counter from './counter';
 import Toggle from './toggle';
 import AppDate from './appDate';
 import Favorite from './Favorite'
-import AppTv from './apicomps/AppTv';
+import AppTv from './hw3/AppTv';
 import AppCoins from './hw2/AppCoins';
 import Casino from './Casino'
 
