@@ -1,4 +1,6 @@
 import './App.css';
+import './global.css';
+
 import Counter from './counter';
 import Toggle from './toggle';
 import AppDate from './appDate';
