@@ -2,15 +2,17 @@ import './App.css';
 import './global.css';
  import { configureStore } from "@reduxjs/toolkit";
  import { Provider } from "react-redux";
-import Counter from './counter';
+import Counter from './redux/counter';
 import Toggle from './toggle';
 import AppDate from './appDate';
 import {BrowserRouter,Routes,Route , Link} from "react-router-dom"
 import counterSlice from "./features/counterSlice";
-
+import todosSlice from "./features/todosSlice";
+import AppTodo from "./todoRedux_comps/appTodo";
 const myStore = configureStore({
   reducer: {
-    counterSlice
+    counterSlice,
+    todosSlice
   }
 })
 function App() {
@@ -32,7 +34,7 @@ function App() {
             <Link to="/counter">counter</Link>
           </li>
           <li>
-            <Link to="/form">Home</Link>
+            <Link to="/todos">Home</Link>
           </li>
         </ul>
       </nav>
@@ -44,6 +46,7 @@ function App() {
 {/* <Route path="/employee/:company" element={<Counter/>}/> */}
 {/* <Route path="/form" element={<Form/>}/> */}
 <Route path="/counter" element={<Counter />} />
+ <Route path="/todos" element={<AppTodo />} />
 <Route path="*" element={<h2>Page not found</h2>}/>
 
 
