@@ -1,27 +1,26 @@
-// App.js
-
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import firebase from './firebase';
-import { UserProvider } from './context/userContext';
-import Login from './components/Auth/login';
-import Register from './components/Auth/register';
-import ResumeForm from './components/resumeForm';
-
-// Other component imports...
-
-const App = () => {
+import React, {useState, useEffect} from 'react';
+import Home from './components/home';
+import Signup from './components/signUp';
+import SignIn from './components/signIn';
+import { BrowserRouter as Router} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
+ import Entry from './components/entry'
+function App() {
+ 
   return (
     <Router>
-    <UserProvider>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/resumeform" element={<ResumeForm />} />
-      </Routes>
-    </UserProvider>
-  </Router>
+      <div>
+        <section>                              
+            <Routes>                
+            <Route path="/home" element={<Home/>}/>
+               <Route path="/" element={<Entry/>}/>
+               <Route path="/signup" element={<Signup/>}/>
+               <Route path="/login" element={<SignIn/>}/>
+            </Routes>                    
+        </section>
+      </div>
+    </Router>
   );
-};
-
+}
+ 
 export default App;
