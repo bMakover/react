@@ -3,9 +3,10 @@ import { auth, database,storage } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { TextField, Button, Grid, Paper } from '@mui/material';
+import { Grid, Paper, Typography, Button,TextField, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox } from '@mui/material';
 import ImageUpload from "./imageupload";
-import { ref, uploadString, getDownloadURL } from 'firebase/storage'; // Import Storage methods specifically
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Import Storage methods specifically
+import { MuiColorInput } from 'mui-color-input'
 const ResumeForm = () => {
   const [fullName, setFullName] = useState('');
   const [workExperience, setWorkExperience] = useState({ companyName: '', timeFrame: '' });
@@ -16,31 +17,38 @@ const ResumeForm = () => {
   const [resumeImage, setResumeImage] = useState(null);
   const [JobDescription,setJobDescription]=useState();
   const [buttonText, setButtonText] = useState('Generate Resume');
-  
+  const [backgroundColor, setBackgroundColor] = useState('#f5f5f5'); // Default background color
+  const [fontColor, setFontColor] = useState('#000000'); // Default font color
+  const [fontSize, setFontSize] = useState('16px'); // Default font size
+  const [fontFamily, setFontFamily] = useState('Arial, sans-serif'); // Default font family
+  const [imgUrl, setImgUrl] = useState('');
   const resumeRef = useRef(null);
-  // const upload = async () => {
-  //   if (!resumeImage) return;
+  const upload = async () => {
+    if (!resumeImage) return;
 
-  //   try {
-  //     const storageRef = ref(storage, `images/${resumeImage.name}`);
-  //     await uploadString(storageRef, resumeImage, 'data_url');
-  //     const imageUrl = await getDownloadURL(storageRef);
-
-  //     // Use the obtained image URL for further processing if needed
-  //   } catch (error) {
-  //     console.error('Error uploading image:', error);
-  //   }
-  // };
+    try {
+      const storageRef = ref(storage, `images/${resumeImage.name}`);
+      await uploadBytes(storageRef, resumeImage);
+      const imageUrl = await getDownloadURL(storageRef);
+console.log(imageUrl)
+      // Set the image URL in the component state
+      setImgUrl(imageUrl);
+      console.log(imgUrl);
+      return imageUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
 
   // Function to set the uploaded image in state
   const handleSetImage = (image) => {
     setResumeImage(image);
   };
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async(e) => {
     e.preventDefault();
     setSubmitted(true);
     setButtonText('Save Changes');
-    // upload()
+    const uploadedUrl = await upload(); // This will set the image URL in the component state
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         const userId = user.uid;
@@ -52,7 +60,14 @@ const ResumeForm = () => {
         userId,
         fullName,
         experience: workExperiences,
-        education: educationDetails
+        education: educationDetails,
+        imageUrl: uploadedUrl || '', // Store the image URL in Firestore
+        design: {
+          backgroundColor,
+          fontColor,
+          fontSize,
+          fontFamily,
+        },
       };
           const docRef = await addDoc(collection(database, 'resumes'), resumeData);
           console.log('Resume added with ID: ', docRef.id);
@@ -181,6 +196,40 @@ const ResumeForm = () => {
 
             </div>
               ))}
+               {/* Design customization options */}
+               <div style={{ marginBottom: '1rem' }}>
+            <Typography variant="h6">Design Customization</Typography>
+            <FormControl fullWidth sx={{ marginBottom: '1rem' }}>
+              
+            <MuiColorInput value={backgroundColor}
+   label="Background Color"
+  onChange={(color) => setBackgroundColor(color)}
+ />
+            </FormControl>
+            <FormControl fullWidth sx={{ marginBottom: '1rem' }}>
+            <MuiColorInput 
+              labelId="font-color-label"
+                value={fontColor}
+                label="Font Color"
+                onChange={(color) => setFontColor(color)}
+ />
+            </FormControl>
+            <FormControl fullWidth sx={{ marginBottom: '1rem' }}>
+              <InputLabel id="font-family-label">Font Family</InputLabel>
+              <Select
+                labelId="font-family-label"
+                value={fontFamily}
+                label="Font Family"
+                onChange={(e) => setFontFamily(e.target.value)}
+              >
+                <MenuItem value="Arial, sans-serif">Arial, sans-serif</MenuItem>
+                <MenuItem value="Helvetica, sans-serif">Helvetica, sans-serif</MenuItem>
+                <MenuItem value="Georgia, serif">Georgia, serif</MenuItem>
+                {/* Add more font family options */}
+              </Select>
+              </FormControl>
+              </div>
+
  <ImageUpload  setImage={handleSetImage} />    
               <Button type="submit" variant="contained">{buttonText}</Button>
             </form>
@@ -188,7 +237,15 @@ const ResumeForm = () => {
            
             {submitted && (
               <>
-              <div ref={resumeRef} style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+              <div ref={resumeRef}  style={{
+                fontFamily: fontFamily,
+                backgroundColor,
+                color: fontColor,
+                fontSize,
+                padding: '20px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              }}>
               {resumeImage && ( 
         <img
           src={URL.createObjectURL(resumeImage)}
